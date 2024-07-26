@@ -1,0 +1,41 @@
+services:
+  gobayarind:
+    container_name: gobayarind
+    image: gobayarind/book-1
+    restart: always
+    environment:
+      - JWT_SECRET=0daf08301d31b170af6e43979d13efbdede03ce5388bde66057358d897545fde
+      - SECRET_KEY=awokoakoko21kokwaokd2k1ookawok412koakkwako412okaokfenjnoj12ijiwd
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=admin
+      - DB_NAME=gobayarind
+    networks:
+      - app-network
+    logging:
+      options:
+        max-size: '10M'
+        max-file: '5'
+
+  postgres:
+    container_name: postgres_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=gobayarind
+    networks:
+      - app-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
