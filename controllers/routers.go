@@ -15,7 +15,7 @@ func NewRouter(bookController *BookController, authorController *AuthorControlle
 	router.POST("/auth/register", authController.Register)
 
 	api := router.Group("/")
-	api.Use(middlewares.AuthMiddleware(db)) // Apply the AuthMiddleware
+	api.Use(middlewares.AuthMiddleware(db))
 	{
 		// Book routes
 		api.POST("/books", bookController.CreateBook)

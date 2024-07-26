@@ -12,7 +12,6 @@ import (
 )
 
 func generateKey(secret string) []byte {
-	// Create a SHA-256 hash of the key to ensure it's 32 bytes long for AES-256
 	hash := sha256.New()
 	hash.Write([]byte(secret))
 	return hash.Sum(nil)
@@ -39,7 +38,6 @@ func EncryptPass(password string) (string, error) {
 
 	plaintext := []byte(password)
 
-	// Generate a random IV for each encryption
 	iv := make([]byte, aes.BlockSize)
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return "", fmt.Errorf("error generating random IV: %w", err)
@@ -49,7 +47,6 @@ func EncryptPass(password string) (string, error) {
 	ciphertext := make([]byte, len(plaintext))
 	cfb.XORKeyStream(ciphertext, plaintext)
 
-	// Prepend IV to ciphertext for decryption
 	result := append(iv, ciphertext...)
 	return encodeBase64(result), nil
 }

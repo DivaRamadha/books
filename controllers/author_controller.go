@@ -16,18 +16,6 @@ type AuthorController struct {
 func NewAuthorController(authorService services.AuthorService) *AuthorController {
 	return &AuthorController{authorService}
 }
-
-// func NewRouter(bookController *BookController) *gin.Engine {
-// 	router := gin.Default()
-
-// 	// Define routes
-// 	router.POST("/author", bookController.CreateBook)
-// 	router.GET("/author/:id", bookController.FindBookByID)
-// 	router.GET("/author", bookController.FindAllBooks)
-
-// 	return router
-// }
-
 func (c *AuthorController) CreateAuthor(ctx *gin.Context) {
 	var author models.Author
 	if err := ctx.ShouldBindJSON(&author); err != nil {
