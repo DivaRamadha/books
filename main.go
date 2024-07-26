@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"main/controllers"
 	"main/models"
 	"main/repositories"
 	"main/services"
+	"os"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -15,12 +17,18 @@ import (
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Failed to load .env file: %v", err)
+		log.Printf("No .env file found")
 	}
 }
 
 func main() {
-	connStr := "postgres://postgres:secret@localhost:5432/gobayarind?sslmode=disable"
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
@@ -49,5 +57,4 @@ func main() {
 	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
-
 }

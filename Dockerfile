@@ -16,15 +16,6 @@ COPY . .
 # Build the Go application
 RUN go build -o gobayarind .
 
-# Step 2: Create a minimal image for running the application
-FROM alpine:latest
-
-# Set the working directory
-WORKDIR /root/
-
-# Copy the binary from the builder stage
-COPY --from=builder /app/gobayarind .
-
 # Expose the port on which the service will run
 EXPOSE 8080
 
