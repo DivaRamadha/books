@@ -9,7 +9,9 @@ import (
 type BookRepository interface {
 	CreateBook(book *models.Book) error
 	FindBookByID(bookID uint) (*models.Book, error)
-	FindAllBooks() ([]models.Book, error)
+	FindAllBooks(search string, authorID uint) ([]models.Book, error)
+	UpdateBook(book *models.Book) error
+	DeleteBook(id uint) error
 }
 
 type bookRepository struct {
@@ -33,11 +35,36 @@ func (r *bookRepository) FindBookByID(bookID uint) (*models.Book, error) {
 	return &book, err
 }
 
-func (r *bookRepository) FindAllBooks() ([]models.Book, error) {
+func (r *bookRepository) FindAllBooks(search string, authorID uint) ([]models.Book, error) {
 	var books []models.Book
-	err := r.db.Preload("Author").Find(&books).Error
-	if err != nil {
-		return nil, err
+	if search != "" && authorID == 0 {
+		err := r.db.Preload("Author").Where("title ILIKE ?", "%"+search+"%").Find(&books).Error
+		if err != nil {
+			return nil, err
+		}
+	} else if search == "" && authorID != 0 {
+		err := r.db.Preload("Author").Where("author_id = ?", authorID).Find(&books).Error
+		if err != nil {
+			return nil, err
+		}
+	} else if search != "" && authorID != 0 {
+		err := r.db.Preload("Author").Where("title LIKE ? AND author_id = ?", "%"+search+"%", authorID).Find(&books).Error
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err := r.db.Preload("Author").Find(&books).Error
+		if err != nil {
+			return nil, err
+		}
 	}
-	return books, err
+	return books, nil
+}
+
+func (r *bookRepository) UpdateBook(book *models.Book) error {
+	return r.db.Save(book).Error
+}
+
+func (r *bookRepository) DeleteBook(id uint) error {
+	return r.db.Delete(&models.Book{}, "id = ?", id).Error
 }

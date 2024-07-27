@@ -11,6 +11,9 @@ type AuthorService interface {
 	CreateAuthor(name string, birth string) (*models.Author, error)
 	FindAuthorByID(authorID uint) (*models.Author, error)
 	FindAllAuthors() ([]models.Author, error)
+	UpdateAuthor(author *models.Author) (*models.Author, error)
+	DeleteAuthor(id uint) error
+	FindAuthorByName(name string) (*models.Author, error)
 }
 
 type authorService struct {
@@ -49,4 +52,24 @@ func (s *authorService) FindAuthorByID(authorID uint) (*models.Author, error) {
 
 func (s *authorService) FindAllAuthors() ([]models.Author, error) {
 	return s.authorRepo.FindAllAuthors()
+}
+
+func (s *authorService) UpdateAuthor(author *models.Author) (*models.Author, error) {
+	err := s.authorRepo.UpdateAuthor(author)
+	if err != nil {
+		return nil, err
+	}
+	return author, nil
+}
+
+func (s *authorService) DeleteAuthor(id uint) error {
+	_, err := s.FindAuthorByID(id)
+	if err != nil {
+		return fmt.Errorf("author not found")
+	}
+	return s.authorRepo.DeleteAuthor(id)
+}
+
+func (s *authorService) FindAuthorByName(name string) (*models.Author, error) {
+	return s.authorRepo.FindAuthorByName(name)
 }

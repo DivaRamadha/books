@@ -9,17 +9,10 @@ import (
 	"main/services"
 	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		log.Printf("No .env file found")
-	}
-}
 
 func main() {
 	dbHost := os.Getenv("DB_HOST")

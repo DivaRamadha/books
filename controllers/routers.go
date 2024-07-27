@@ -21,10 +21,15 @@ func NewRouter(bookController *BookController, authorController *AuthorControlle
 		api.POST("/books", bookController.CreateBook)
 		api.GET("/books/:id", bookController.FindBookByID)
 		api.GET("/books", bookController.FindAllBooks)
+		router.PUT("/books/:id", bookController.UpdateBook)
+		api.DELETE("/books/:id", bookController.DeleteBook)
 
 		// Author routes
 		api.GET("/authors", authorController.FindAllAuthors)
 		api.GET("/authors/:id", authorController.FindAuthorByID)
+		api.PUT("/authors/:id", authorController.UpdateAuthor)
+		api.DELETE("/authors/:id", authorController.DeleteAuthor)
+		api.GET("/authors/name/:name", authorController.FindAuthorByName)
 		api.POST("/authors", authorController.CreateAuthor)
 
 		// User routes
